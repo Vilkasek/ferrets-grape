@@ -9,6 +9,7 @@ local Player = {
   frame = 0,
   anim_timer = 0,
   anim_speed = 4,
+  anim_changed = false,
 
   vel_x = 0,
   vel_y = 0,
@@ -19,6 +20,8 @@ local Player = {
   speed = 9,
 
   is_on_ground = false,
+  is_jumping = false,
+  jump_power = 10,
 
   gravity = 0.5,
 }
@@ -59,9 +62,12 @@ function Player.init()
 end
 
 local function change_animation(anim_name)
-  Player.current_animation = anim_name
+  if Player.current_animation ~= anim_name then
+    Player.current_animation = anim_name
+    Player.frame = 1
+    Player.anim_timer = 0
+  end
 end
-
 local function determine_animation()
   if Player.is_on_ground then
     if Player.vel_x ~= 0 then
@@ -109,12 +115,20 @@ local function handle_input()
   else
     Player.vel_x = 0
   end
+
+  if buttons.cross then
+    Player.is_jumping = true
+  end
 end
 
 local function handle_gravitation()
   Player.vel_y = Player.vel_y + Player.gravity
 
-  if Player.pos_y + 32 >= 272 then
+  if Player.is_jumping and Player.is_on_ground then
+    Player.vel_y = -Player.jump_power
+    Player.is_jumping = false
+    Player.is_on_ground = false
+  elseif Player.pos_y + 32 >= 272 then
     Player.vel_y = 0
     Player.pos_y = 272 - 32
     Player.is_on_ground = true
@@ -136,6 +150,10 @@ end
 
 function Player.render()
   local animation_frames = Player.animations[Player.current_animation]
+
+  screen.print(0, 0, "Current animation: " .. Player.current_animation)
+  screen.print(0, 20, "Frames count: " .. (#animation_frames or 0))
+  screen.print(0, 40, "Current frame: " .. Player.frame)
 
   if animation_frames and #animation_frames > 0 and Player.frame <= #animation_frames then
     local current_frame_image = animation_frames[Player.frame]
