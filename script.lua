@@ -13,6 +13,8 @@ local backgrounds = {
 player.init()
 
 local function update()
+	buttons.read()
+
 	player.update()
 end
 

@@ -16,7 +16,7 @@ local Player = {
 	pos_x = 100,
 	pos_y = 100,
 
-	speed = 20,
+	speed = 9,
 }
 
 local function load_animation_frames(folder_path)
@@ -40,7 +40,7 @@ end
 
 local function load_animations()
 	Player.animations.idle = load_animation_frames("assets/graphics/player/idle")
-	Player.animations.move = load_animation_frames("assets/graphics/player/move")
+	Player.animations.moving = load_animation_frames("assets/graphics/player/move")
 	Player.animations.ascending = load_animation_frames("assets/graphics/player/ascending")
 	Player.animations.descending = load_animation_frames("assets/graphics/player/descending")
 
@@ -54,7 +54,21 @@ function Player.init()
 	load_animations()
 end
 
+local function change_animation(anim_name)
+  Player.current_animation = anim_name
+end
+
+local function determine_animation()
+  if Player.vel_x ~= 0 then
+    change_animation("moving")
+  else
+    change_animation("idle")
+  end
+end
+
 local function update_animation()
+  determine_animation()
+
 	local animation_frames = Player.animations[Player.current_animation]
 
 	if not animation_frames or #animation_frames == 0 then
@@ -73,8 +87,25 @@ local function update_animation()
 	end
 end
 
+local function handle_input()
+  if buttons.held.left then
+    Player.vel_x = -1
+  elseif buttons.held.right then
+    Player.vel_x = 1
+  else
+    Player.vel_x = 0
+  end
+end
+
+local function update_pos()
+  handle_input()
+
+  Player.pos_x = Player.pos_x + Player.vel_x * Player.speed
+end
+
 function Player.update()
 	update_animation()
+  update_pos()
 end
 
 function Player.render()
