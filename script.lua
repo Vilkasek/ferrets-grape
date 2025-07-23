@@ -1,12 +1,15 @@
-local backgrounds = {
+local background_paths = {
 	"./assets/graphics/backgrounds/level1.png",
 	"./assets/graphics/backgrounds/level2.png",
 }
 
-local background = image.load(backgrounds[1])
+local backgrounds = {
+	image.load(background_paths[1]),
+	image.load(background_paths[2]),
+}
 
 while true do
-	image.blit(background, 0, 0)
+	image.blit(backgrounds[1], 0, 0)
 
 	screen.flip()
 end
