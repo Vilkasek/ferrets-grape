@@ -1,0 +1,2 @@
+local Tilemap = {}
+return Tilemap
