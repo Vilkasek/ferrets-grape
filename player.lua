@@ -17,14 +17,19 @@ local Player = {
 	pos_x = 100,
 	pos_y = 100,
 
-	speed = 9,
+	speed = 7,
 
 	is_on_ground = false,
 	is_jumping = false,
 	jump_power = 10,
 
 	gravity = 0.5,
+
+	height = 29,
+	width = 30,
 }
+
+local tilemap = require("tilemap")
 
 local function load_animation_frames(folder_path)
 	local frames = {}
@@ -147,10 +152,6 @@ local function handle_gravitation()
 		Player.vel_y = -Player.jump_power
 		Player.is_jumping = false
 		Player.is_on_ground = false
-	elseif Player.pos_y + 32 >= 272 then
-		Player.vel_y = 0
-		Player.pos_y = 272 - 32
-		Player.is_on_ground = true
 	end
 end
 
@@ -158,8 +159,38 @@ local function update_pos()
 	handle_input()
 	handle_gravitation()
 
-	Player.pos_x = Player.pos_x + Player.vel_x * Player.speed
-	Player.pos_y = Player.pos_y + Player.vel_y
+	local vel_x_pixels = (Player.vel_x or 0) * (Player.speed or 7)
+
+	if not tilemap or not tilemap.resolve_collision then
+		return
+	end
+
+	local new_x, new_y, hit_x, hit_y = tilemap.resolve_collision(
+		Player.pos_x or 100,
+		Player.pos_y or 100,
+		Player.facing_right,
+		Player.width or 32,
+		Player.height or 29,
+		vel_x_pixels,
+		Player.vel_y or 0
+	)
+
+	Player.pos_x = new_x
+	Player.pos_y = new_y
+
+	if hit_y and Player.vel_y > 0 then
+		Player.is_on_ground = true
+		Player.vel_y = 0
+	elseif hit_y and Player.vel_y < 0 then
+		Player.vel_y = 0
+	end
+
+	if Player.is_on_ground and Player.vel_y >= 0 then
+		local ground_check_y = Player.pos_y + Player.height + 1
+		if not tilemap.check_solid(Player.pos_x, ground_check_y, Player.width, 1) then
+			Player.is_on_ground = false
+		end
+	end
 end
 
 function Player.update()
