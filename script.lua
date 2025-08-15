@@ -1,5 +1,6 @@
 local player = require("player")
 local tilemap = require("tilemap")
+local camera = require("camera")
 
 local mapdata = require("levels.level1")
 
@@ -20,6 +21,7 @@ local function update()
 	buttons.read()
 
 	player.update()
+	camera.update(player, tilemap)
 end
 
 local function render()

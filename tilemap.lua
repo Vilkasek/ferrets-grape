@@ -7,6 +7,8 @@ local Tilemap = {
 }
 
 local tilemap
+
+local camera = require("camera")
 local math = require("math")
 
 local function load_tileset(path)
@@ -116,7 +118,7 @@ end
 
 function Tilemap.render()
 	if tilemap then
-		tilemap:blit(0, 0)
+		tilemap:blit(camera.x, camera.y)
 	end
 end
 

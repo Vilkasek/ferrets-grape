@@ -30,6 +30,7 @@ local Player = {
 }
 
 local tilemap = require("tilemap")
+local camera = require("camera")
 
 local function load_animation_frames(folder_path)
 	local frames = {}
@@ -205,7 +206,7 @@ function Player.render()
 		local current_frame_image = animation_frames[Player.frame]
 
 		if current_frame_image then
-			current_frame_image:blit(Player.pos_x, Player.pos_y)
+			current_frame_image:blit(Player.pos_x - camera.x, Player.pos_y - camera.y)
 		end
 	end
 end
