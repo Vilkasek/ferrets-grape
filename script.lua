@@ -4,6 +4,12 @@ local camera = require("camera")
 
 local mapdata = require("levels.level1")
 
+local music = sound.load("./assets/audio/music/background.wav")
+
+sound.loop(music)
+sound.play(music, 1)
+sound.vol(music, 50)
+
 local background_paths = {
   "./assets/graphics/backgrounds/menu_background.png",
   "./assets/graphics/backgrounds/level1.png",
@@ -25,7 +31,7 @@ local idle_paths = {
 local active_paths = {
   "./assets/graphics/menu/start_active.png",
   "./assets/graphics/menu/continue_active.png",
-  "./assets/graphics/menu/options_active.png"
+  "./assets/graphics/menu/options_active.png",
 }
 
 local idles = {
@@ -60,19 +66,19 @@ local function clamp_actives()
 end
 
 local function update_menu()
-   if buttons.released.down then
-      active = active + 1
-      clamp_actives()
-   end
+  if buttons.released.down then
+    active = active + 1
+    clamp_actives()
+  end
 
-   if buttons.released.up then
-      active = active - 1
-      clamp_actives()
-   end
+  if buttons.released.up then
+    active = active - 1
+    clamp_actives()
+  end
 
-   if buttons.released.cross and (active == 1 or active == 2) then
+  if buttons.released.cross and (active == 1 or active == 2) then
     state = "GAME"
-   end
+  end
 end
 
 local ui_x = 200
@@ -99,9 +105,9 @@ local function update()
   update_menu()
 
   if state == "MENU" then
-     if buttons.released.r then
-        state = "GAME"
-     end
+    if buttons.released.r then
+      state = "GAME"
+    end
   elseif state == "GAME" then
     player.update()
     camera.update(player, tilemap)
