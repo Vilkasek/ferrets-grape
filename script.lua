@@ -1,13 +1,13 @@
 local background_paths = {
-	"./assets/graphics/backgrounds/menu_background.png",
-	"./assets/graphics/backgrounds/level1.png",
-	"./assets/graphics/backgrounds/level2.png",
+  "./assets/graphics/backgrounds/menu_background.png",
+  "./assets/graphics/backgrounds/level1.png",
+  "./assets/graphics/backgrounds/level2.png",
 }
 
 local backgrounds = {
-	image.load(background_paths[1]),
-	image.load(background_paths[2]),
-	image.load(background_paths[3]),
+  image.load(background_paths[1]),
+  image.load(background_paths[2]),
+  image.load(background_paths[3]),
 }
 
 local player = require("player")
@@ -15,55 +15,38 @@ local tilemap = require("tilemap")
 local decorations = require("decorations")
 local camera = require("camera")
 
-local levels = {
-	[1] = {
-		map_data_path = "levels.level1",
-		deco_data_path = "levels.level1_decorations",
-		tileset_path = "./assets/graphics/tilesets/level1.png",
-		deco_tileset_path = "./assets/graphics/tilesets/grass.png",
-		background_index = 2,
-		start_pos = { x = 100, y = 100 },
-	},
-	[2] = {
-		map_data_path = "levels.level2",
-		deco_data_path = "levels.level2_decorations",
-		tileset_path = "./assets/graphics/tilesets/level2.png",
-		deco_tileset_path = "./assets/graphics/tilesets/grass.png",
-		background_index = 3,
-		start_pos = { x = 50, y = 150 },
-	},
-}
+local levels = require("levels.levels")
 
 local current_level_index = 1
 local current_background = nil
 
 local function load_level(level_index)
-	local level_config = levels[level_index]
-	if not level_config then
-		return
-	end
+  local level_config = levels[level_index]
+  if not level_config then
+    return
+  end
 
-	package.loaded[level_config.map_data_path] = nil
-	package.loaded[level_config.deco_data_path] = nil
+  package.loaded[level_config.map_data_path] = nil
+  package.loaded[level_config.deco_data_path] = nil
 
-	local mapdata = require(level_config.map_data_path)
-	local decodata = require(level_config.deco_data_path)
+  local mapdata = require(level_config.map_data_path)
+  local decodata = require(level_config.deco_data_path)
 
-	tilemap.init(level_config.tileset_path, mapdata)
-	decorations.init(level_config.deco_tileset_path, decodata)
+  tilemap.init(level_config.tileset_path, mapdata)
+  decorations.init(level_config.deco_tileset_path, decodata)
 
-	current_background = backgrounds[level_config.background_index]
+  current_background = backgrounds[level_config.background_index]
 
-	player.pos_x = level_config.start_pos.x
-	player.pos_y = level_config.start_pos.y
-	player.vel_x = 0
-	player.vel_y = 0
+  player.pos_x = level_config.start_pos.x
+  player.pos_y = level_config.start_pos.y
+  player.vel_x = 0
+  player.vel_y = 0
 
-	camera.x = 0
-	camera.y = 0
-	camera.update(player, tilemap)
+  camera.x = 0
+  camera.y = 0
+  camera.update(player, tilemap)
 
-	current_level_index = level_index
+  current_level_index = level_index
 end
 
 local music = sound.load("./assets/audio/music/background.wav")
@@ -72,14 +55,14 @@ sound.play(music, 1)
 sound.vol(music, 50)
 
 local idle_paths = {
-	"./assets/graphics/menu/start_idle.png",
-	"./assets/graphics/menu/continue_idle.png",
-	"./assets/graphics/menu/options_idle.png",
+  "./assets/graphics/menu/start_idle.png",
+  "./assets/graphics/menu/continue_idle.png",
+  "./assets/graphics/menu/options_idle.png",
 }
 local active_paths = {
-	"./assets/graphics/menu/start_active.png",
-	"./assets/graphics/menu/continue_active.png",
-	"./assets/graphics/menu/options_active.png",
+  "./assets/graphics/menu/start_active.png",
+  "./assets/graphics/menu/continue_active.png",
+  "./assets/graphics/menu/options_active.png",
 }
 local idles = { image.load(idle_paths[1]), image.load(idle_paths[2]), image.load(idle_paths[3]) }
 local actives = { image.load(active_paths[1]), image.load(active_paths[2]), image.load(active_paths[3]) }
@@ -91,92 +74,92 @@ local activable = { "START", "CONTINUE", "OPTIONS" }
 local active = 1
 
 local function clamp_actives()
-	if active > #activable then
-		active = 1
-	elseif active < 1 then
-		active = #activable
-	end
+  if active > #activable then
+    active = 1
+  elseif active < 1 then
+    active = #activable
+  end
 end
 
 local function update_menu()
-	if buttons.released.down then
-		active = active + 1
-		clamp_actives()
-	end
-	if buttons.released.up then
-		active = active - 1
-		clamp_actives()
-	end
+  if buttons.released.down then
+    active = active + 1
+    clamp_actives()
+  end
+  if buttons.released.up then
+    active = active - 1
+    clamp_actives()
+  end
 
-	if buttons.released.cross and (active == 1 or active == 2) then
-		state = "GAME"
-		load_level(1)
-	end
+  if buttons.released.cross and (active == 1 or active == 2) then
+    state = "GAME"
+    load_level(1)
+  end
 end
 
 local function check_level_transition()
-	local player_check_x = player.pos_x + (player.width / 2)
-	local player_check_y = player.pos_y + player.height - 1
-	local tile_id = tilemap.get_tile_at(player_check_x, player_check_y)
+  local player_check_x = player.pos_x + (player.width / 2)
+  local player_check_y = player.pos_y + player.height - 1
+  local tile_id = tilemap.get_tile_at(player_check_x, player_check_y)
 
-	if tile_id == 99 then
-		local next_level = current_level_index + 1
-		if levels[next_level] then
-			load_level(next_level)
-		else
-			state = "MENU"
-		end
-	end
+  if tile_id == 99 then
+    local next_level = current_level_index + 1
+    if levels[next_level] then
+      load_level(next_level)
+    else
+      state = "MENU"
+    end
+  end
 end
 
 local ui_x = 200
 local function render_menu()
-	if active == 1 then
-		actives[1]:blit(ui_x, 100)
-		idles[2]:blit(ui_x, 150)
-		idles[3]:blit(ui_x, 200)
-	elseif active == 2 then
-		idles[1]:blit(ui_x, 100)
-		actives[2]:blit(ui_x, 150)
-		idles[3]:blit(ui_x, 200)
-	elseif active == 3 then
-		idles[1]:blit(ui_x, 100)
-		idles[2]:blit(ui_x, 150)
-		actives[3]:blit(ui_x, 200)
-	end
+  if active == 1 then
+    actives[1]:blit(ui_x, 100)
+    idles[2]:blit(ui_x, 150)
+    idles[3]:blit(ui_x, 200)
+  elseif active == 2 then
+    idles[1]:blit(ui_x, 100)
+    actives[2]:blit(ui_x, 150)
+    idles[3]:blit(ui_x, 200)
+  elseif active == 3 then
+    idles[1]:blit(ui_x, 100)
+    idles[2]:blit(ui_x, 150)
+    actives[3]:blit(ui_x, 200)
+  end
 end
 
 local function update()
-	buttons.read()
-	if state == "MENU" then
-		update_menu()
-		if buttons.released.r then
-			state = "GAME"
-			load_level(1)
-		end
-	elseif state == "GAME" then
-		player.update()
-		camera.update(player, tilemap)
-		check_level_transition()
-	end
+  buttons.read()
+  if state == "MENU" then
+    update_menu()
+    if buttons.released.r then
+      state = "GAME"
+      load_level(1)
+    end
+  elseif state == "GAME" then
+    player.update()
+    camera.update(player, tilemap)
+    check_level_transition()
+  end
 end
 
 local function render()
-	if state == "MENU" then
-		image.blit(backgrounds[1], 0, 0)
-		render_menu()
-	elseif state == "GAME" then
-		if current_background then
-			image.blit(current_background, 0, 0)
-		end
-		tilemap.render()
-		decorations.render()
-		player.render()
-	end
-	screen.flip()
+  if state == "MENU" then
+    image.blit(backgrounds[1], 0, 0)
+    render_menu()
+  elseif state == "GAME" then
+    if current_background then
+      image.blit(current_background, 0, 0)
+    end
+    tilemap.render()
+    decorations.render()
+    player.render()
+  end
+  screen.flip()
 end
 
 while true do
-	update()
-	render()
+  update()
+  render()
 end
