@@ -23,6 +23,8 @@ local main_menu = {
 
 	activable = { "START", "CONTINUE", "OPTIONS" },
 	active = 1,
+
+	menusound = nil,
 }
 
 local function clamp_actives()
@@ -33,7 +35,7 @@ local function clamp_actives()
 	end
 end
 
-function main_menu.init()
+function main_menu.init(mn)
 	main_menu.idles = {
 		image.load(main_menu.idle_paths[1]),
 		image.load(main_menu.idle_paths[2]),
@@ -45,24 +47,30 @@ function main_menu.init()
 		image.load(main_menu.active_paths[2]),
 		image.load(main_menu.active_paths[3]),
 	}
+
+	main_menu.menusound = mn
 end
 
 function main_menu.update()
 	if buttons.released.down then
+		main_menu.menusound:play(3)
 		main_menu.active = main_menu.active + 1
 		clamp_actives()
 	end
 	if buttons.released.up then
+		main_menu.menusound:play(2)
 		main_menu.active = main_menu.active - 1
 		clamp_actives()
 	end
 
 	if buttons.released.cross and (main_menu.active == 1 or main_menu.active == 2) then
+		main_menu.menusound:play(2)
 		level_manager.load_level(1, player, tilemap, decorations, camera)
 		state_machine.change_state("GAME")
 	end
 
 	if buttons.released.cross and main_menu.active == 3 then
+		main_menu.menusound:play(2)
 		state_machine.change_state("OPTIONS")
 	end
 end

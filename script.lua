@@ -10,12 +10,12 @@ local options = require("options")
 local music = sound.load("./assets/audio/music/background.wav")
 local footstep = sound.load("./assets/audio/sounds/footstep.wav")
 local jumpsound = sound.load("./assets/audio/sounds/jump.wav")
+local menu = sound.load("./assets/audio/sounds/menu.wav")
 
-main_menu.init()
+main_menu.init(menu)
 player.init(footstep, jumpsound)
 level_manager.init()
-options.init(footstep, jumpsound, music)
-
+options.init(footstep, jumpsound, music, menu)
 
 sound.loop(music)
 sound.play(music, 1)
