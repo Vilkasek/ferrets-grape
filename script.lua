@@ -94,7 +94,7 @@ local function update_menu()
 	end
 
 	if buttons.released.cross and (active == 1 or active == 2) then
-		state = "GAME"
+		state_machine.change_state("GAME")
 		load_level(1)
 	end
 end
@@ -109,7 +109,7 @@ local function check_level_transition()
 		if levels[next_level] then
 			load_level(next_level)
 		else
-			state = "MENU"
+			state_machine.change_state("MENU")
 		end
 	end
 end
