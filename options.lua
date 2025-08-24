@@ -18,14 +18,14 @@ local options = {
 	footstep = nil,
 	jumpsound = nil,
 	music = nil,
-  menusound = nil,
+	menusound = nil,
 
 	activable = { "MUSIC", "SOUNDS", "MENU" },
 	active = 1,
 }
 
 function options.init(foot, jump, m, mn)
-  background = image.load(options.background_path)
+	background = image.load(options.background_path)
 
 	options.volume_big = image.load(options.volume_big_path)
 	options.volume_small = image.load(options.volume_small_path)
@@ -34,7 +34,7 @@ function options.init(foot, jump, m, mn)
 	options.footstep = foot
 	options.jumpsound = jump
 	options.music = m
-  options.menusound = mn
+	options.menusound = mn
 end
 
 local function clamp_actives()
@@ -58,7 +58,7 @@ local function clamp_level()
 		options.effects_level = 10
 	end
 
-  if options.menu_level <= 0 then
+	if options.menu_level <= 0 then
 		options.menu_level = 0
 	elseif options.menu_level >= 10 then
 		options.menu_level = 10
@@ -76,7 +76,7 @@ local function change_volume(bar)
 			options.footstep:vol(options.effects_level * 10)
 			options.jumpsound:vol(options.effects_level * 10)
 			clamp_level()
-    elseif bar == 3 then
+		elseif bar == 3 then
 			options.menu_level = options.menu_level - 1
 			options.menusound:vol(options.menu_level * 10)
 			clamp_level()
@@ -92,6 +92,10 @@ local function change_volume(bar)
 			options.effects_level = options.effects_level + 1
 			options.footstep:vol(options.effects_level * 10)
 			options.jumpsound:vol(options.effects_level * 10)
+			clamp_level()
+		elseif bar == 3 then
+			options.menu_level = options.menu_level + 1
+			options.menusound:vol(options.menu_level * 10)
 			clamp_level()
 		end
 	end
@@ -109,10 +113,10 @@ function options.update()
 		clamp_actives()
 	end
 
-  if buttons.released.circle then
+	if buttons.released.circle then
 		options.menusound:play(2)
-    state_machine.change_state("MENU")
-  end
+		state_machine.change_state("MENU")
+	end
 
 	change_volume(options.active)
 end
