@@ -12,6 +12,8 @@ local backgrounds = {
 
 local state_machine = require("state_machine")
 
+local main_menu = require("main_menu")
+
 local player = require("player")
 local tilemap = require("tilemap")
 local decorations = require("decorations")
@@ -70,6 +72,7 @@ local idles = { image.load(idle_paths[1]), image.load(idle_paths[2]), image.load
 local actives = { image.load(active_paths[1]), image.load(active_paths[2]), image.load(active_paths[3]) }
 
 player.init()
+main_menu.init()
 
 local state = "MENU"
 local activable = { "START", "CONTINUE", "OPTIONS" }
@@ -134,7 +137,7 @@ end
 local function update()
 	buttons.read()
 	if state_machine.get_state() == "MENU" then
-		update_menu()
+		main_menu.update()
 	elseif state_machine.get_state() == "GAME" then
 		player.update()
 		camera.update(player, tilemap)
@@ -145,7 +148,7 @@ end
 local function render()
 	if state_machine.get_state() == "MENU" then
 		image.blit(backgrounds[1], 0, 0)
-		render_menu()
+		main_menu.render()
 	elseif state_machine.get_state() == "GAME" then
 		if current_background then
 			image.blit(current_background, 0, 0)

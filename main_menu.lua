@@ -12,20 +12,67 @@ local main_menu = {
 		"./assets/graphics/menu/continue_active.png",
 		"./assets/graphics/menu/options_active.png",
 	},
+
+ idles = {},
+ actives = {},
+
+  activable = {"START", "CONTINUE", "OPTIONS"},
+  active = 1,
 }
+
+
+local function clamp_actives()
+	if main_menu.active > #main_menu.activable then
+		main_menu.active = 1
+	elseif main_menu.active < 1 then
+		main_menu.active = #main_menu.activable
+	end
+end
+
+function main_menu.init()
+  main_menu.idles = {
+    image.load(main_menu.idle_paths[1]),
+    image.load(main_menu.idle_paths[2]),
+    image.load(main_menu.idle_paths[3]),
+  }
+
+  main_menu.actives = {
+    image.load(main_menu.active_paths[1]),
+    image.load(main_menu.active_paths[2]),
+    image.load(main_menu.active_paths[3]),
+  }
+end
 
 function main_menu.update()
 	if buttons.released.down then
-		active = active + 1
+		main_menu.active = main_menu.active + 1
 		clamp_actives()
 	end
 	if buttons.released.up then
-		active = active - 1
+		main_menu.active = main_menu.active - 1
 		clamp_actives()
 	end
 
-	if buttons.released.cross and (active == 1 or active == 2) then
+	if buttons.released.cross and (main_menu.active == 1 or main_menu.active == 2) then
 		state_machine.change_state("GAME")
+	end
+end
+
+function main_menu.render()
+	local ui_x = 200
+
+  if main_menu.active == 1 then
+		main_menu.actives[1]:blit(ui_x, 100)
+		main_menu.idles[2]:blit(ui_x, 150)
+		main_menu.idles[3]:blit(ui_x, 200)
+	elseif main_menu.active == 2 then
+		main_menu.idles[1]:blit(ui_x, 100)
+		main_menu.actives[2]:blit(ui_x, 150)
+		main_menu.idles[3]:blit(ui_x, 200)
+	elseif main_menu.active == 3 then
+		main_menu.idles[1]:blit(ui_x, 100)
+		main_menu.idles[2]:blit(ui_x, 150)
+		main_menu.actives[3]:blit(ui_x, 200)
 	end
 end
 
