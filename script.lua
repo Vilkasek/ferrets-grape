@@ -5,12 +5,18 @@ local player = require("player")
 local tilemap = require("tilemap")
 local decorations = require("decorations")
 local camera = require("camera")
-
-main_menu.init()
-player.init()
-level_manager.init()
+local options = require("options")
 
 local music = sound.load("./assets/audio/music/background.wav")
+local footstep = sound.load("./assets/audio/sounds/footstep.wav")
+local jumpsound = sound.load("./assets/audio/sounds/jump.wav")
+
+main_menu.init()
+player.init(footstep, jumpsound)
+level_manager.init()
+options.init(footstep, jumpsound, music)
+
+
 sound.loop(music)
 sound.play(music, 1)
 sound.vol(music, 50)
@@ -24,6 +30,8 @@ local function update()
 		player.update()
 		camera.update(player, tilemap)
 		level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine)
+	elseif state_machine.get_state() == "OPTIONS" then
+		options.update()
 	end
 end
 
@@ -42,6 +50,8 @@ local function render()
 		tilemap.render()
 		decorations.render()
 		player.render()
+	elseif state_machine.get_state() == "OPTIONS" then
+		options.render()
 	end
 	screen.flip()
 end

@@ -61,6 +61,10 @@ function main_menu.update()
 		level_manager.load_level(1, player, tilemap, decorations, camera)
 		state_machine.change_state("GAME")
 	end
+
+	if buttons.released.cross and main_menu.active == 3 then
+		state_machine.change_state("OPTIONS")
+	end
 end
 
 function main_menu.render()

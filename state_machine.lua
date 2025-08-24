@@ -4,15 +4,16 @@ local state_machine = {
 	states = {
 		"MENU",
 		"GAME",
+		"OPTIONS",
 	},
 	state = "MENU",
 }
 
 function state_machine.change_state(st)
 	if contains(state_machine.states, st) then
-    state_machine.state = st
-  else
-    state_machine.state = "MENU"
+		state_machine.state = st
+	else
+		state_machine.state = "MENU"
 	end
 end
 
