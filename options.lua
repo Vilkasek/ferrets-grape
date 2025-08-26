@@ -25,7 +25,7 @@ local options = {
 }
 
 function options.init(foot, jump, m, mn)
-	background = image.load(options.background_path)
+	options.background = image.load(options.background_path)
 
 	options.volume_big = image.load(options.volume_big_path)
 	options.volume_small = image.load(options.volume_small_path)
@@ -124,6 +124,8 @@ end
 function options.render()
 	background:blit(0, 0)
 
+	screen.print(100, 50, "Music", 1, color.new(0, 0, 0))
+
 	for i = 1, 10 do
 		if options.music_level >= i then
 			options.volume_big:blit(i * 16 + 150, 80)
@@ -132,6 +134,8 @@ function options.render()
 		end
 	end
 
+	screen.print(100, 120, "Sounds", 1, color.new(0, 0, 0))
+
 	for i = 1, 10 do
 		if options.effects_level >= i then
 			options.volume_big:blit(i * 16 + 150, 120)
@@ -139,6 +143,8 @@ function options.render()
 			options.volume_small:blit(i * 16 + 150, 120)
 		end
 	end
+
+	screen.print(100, 140, "Menu", 1, color.new(0, 0, 0))
 
 	for i = 1, 10 do
 		if options.menu_level >= i then
