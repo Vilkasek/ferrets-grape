@@ -6,6 +6,19 @@ local options = {
 
 	background_path = "./assets/graphics/backgrounds/menu_background.png",
 
+	arrows_idle_paths = {
+		"./assets/graphics/options/arrow_left_idle.png",
+		"./assets/graphics/options/arrow_right_idle.png",
+	},
+
+	arrows_active_paths = {
+		"./assets/graphics/options/arrow_left_active.png",
+		"./assets/graphics/options/arrow_right_active.png",
+	},
+
+	arrows_idle = nil,
+	arrows_active = nil,
+
 	volume_big = nil,
 	volume_small = nil,
 
@@ -35,6 +48,9 @@ function options.init(foot, jump, m, mn)
 	options.jumpsound = jump
 	options.music = m
 	options.menusound = mn
+
+	options.arrows_idle = { image.load(options.arrows_idle_paths[1]), image.load(options.arrows_idle_paths[2]) }
+	options.arrows_active = { image.load(options.arrows_active_paths[1]), image.load(options.arrows_active_paths[2]) }
 end
 
 local function clamp_actives()
@@ -121,11 +137,7 @@ function options.update()
 	change_volume(options.active)
 end
 
-function options.render()
-	background:blit(0, 0)
-
-	screen.print(100, 50, "Music", 1, color.new(0, 0, 0))
-
+local function render_music_bar()
 	for i = 1, 10 do
 		if options.music_level >= i then
 			options.volume_big:blit(i * 16 + 150, 80)
@@ -134,8 +146,16 @@ function options.render()
 		end
 	end
 
-	screen.print(100, 120, "Sounds", 1, color.new(0, 0, 0))
+	if options.active == 1 then
+		options.arrows_active[1]:blit(150, 80)
+		options.arrows_active[2]:blit(326, 80)
+	else
+		options.arrows_idle[1]:blit(150, 80)
+		options.arrows_idle[2]:blit(326, 80)
+	end
+end
 
+local function render_effects_bar()
 	for i = 1, 10 do
 		if options.effects_level >= i then
 			options.volume_big:blit(i * 16 + 150, 120)
@@ -144,8 +164,16 @@ function options.render()
 		end
 	end
 
-	screen.print(100, 140, "Menu", 1, color.new(0, 0, 0))
+	if options.active == 2 then
+		options.arrows_active[1]:blit(150, 120)
+		options.arrows_active[2]:blit(326, 120)
+	else
+		options.arrows_idle[1]:blit(150, 120)
+		options.arrows_idle[2]:blit(326, 120)
+	end
+end
 
+local function render_menu_bar()
 	for i = 1, 10 do
 		if options.menu_level >= i then
 			options.volume_big:blit(i * 16 + 150, 160)
@@ -153,6 +181,22 @@ function options.render()
 			options.volume_small:blit(i * 16 + 150, 160)
 		end
 	end
+
+	if options.active == 3 then
+		options.arrows_active[1]:blit(150, 160)
+		options.arrows_active[2]:blit(326, 160)
+	else
+		options.arrows_idle[1]:blit(150, 160)
+		options.arrows_idle[2]:blit(326, 160)
+	end
+end
+
+function options.render()
+	options.background:blit(0, 0)
+
+	render_music_bar()
+	render_effects_bar()
+	render_menu_bar()
 end
 
 return options
