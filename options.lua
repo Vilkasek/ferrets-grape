@@ -20,6 +20,7 @@ local options = {
 		"./assets/graphics/options/music_label.png",
 		"./assets/graphics/options/effects_label.png",
 		"./assets/graphics/options/menu_label.png",
+		"./assets/graphics/options/back_to_menu.png",
 	},
 
 	arrows_idle = nil,
@@ -27,6 +28,8 @@ local options = {
 
 	volume_big = nil,
 	volume_small = nil,
+
+	labels = nil,
 
 	background = nil,
 
@@ -57,6 +60,13 @@ function options.init(foot, jump, m, mn)
 
 	options.arrows_idle = { image.load(options.arrows_idle_paths[1]), image.load(options.arrows_idle_paths[2]) }
 	options.arrows_active = { image.load(options.arrows_active_paths[1]), image.load(options.arrows_active_paths[2]) }
+
+	options.labels = {
+		image.load(options.labels_paths[1]),
+		image.load(options.labels_paths[2]),
+		image.load(options.labels_paths[3]),
+		image.load(options.labels_paths[4]),
+	}
 end
 
 local function clamp_actives()
@@ -152,6 +162,8 @@ local function render_music_bar()
 		end
 	end
 
+	options.labels[1]:blit(200, 55)
+
 	if options.active == 1 then
 		options.arrows_active[1]:blit(150, 80)
 		options.arrows_active[2]:blit(326, 80)
@@ -164,41 +176,47 @@ end
 local function render_effects_bar()
 	for i = 1, 10 do
 		if options.effects_level >= i then
-			options.volume_big:blit(i * 16 + 150, 120)
+			options.volume_big:blit(i * 16 + 150, 130)
 		else
-			options.volume_small:blit(i * 16 + 150, 120)
+			options.volume_small:blit(i * 16 + 150, 130)
 		end
 	end
 
+	options.labels[2]:blit(200, 105)
+
 	if options.active == 2 then
-		options.arrows_active[1]:blit(150, 120)
-		options.arrows_active[2]:blit(326, 120)
+		options.arrows_active[1]:blit(150, 130)
+		options.arrows_active[2]:blit(326, 130)
 	else
-		options.arrows_idle[1]:blit(150, 120)
-		options.arrows_idle[2]:blit(326, 120)
+		options.arrows_idle[1]:blit(150, 130)
+		options.arrows_idle[2]:blit(326, 130)
 	end
 end
 
 local function render_menu_bar()
 	for i = 1, 10 do
 		if options.menu_level >= i then
-			options.volume_big:blit(i * 16 + 150, 160)
+			options.volume_big:blit(i * 16 + 150, 180)
 		else
-			options.volume_small:blit(i * 16 + 150, 160)
+			options.volume_small:blit(i * 16 + 150, 180)
 		end
 	end
 
+	options.labels[3]:blit(200, 155)
+
 	if options.active == 3 then
-		options.arrows_active[1]:blit(150, 160)
-		options.arrows_active[2]:blit(326, 160)
+		options.arrows_active[1]:blit(150, 180)
+		options.arrows_active[2]:blit(326, 180)
 	else
-		options.arrows_idle[1]:blit(150, 160)
-		options.arrows_idle[2]:blit(326, 160)
+		options.arrows_idle[1]:blit(150, 180)
+		options.arrows_idle[2]:blit(326, 180)
 	end
 end
 
 function options.render()
 	options.background:blit(0, 0)
+
+	options.labels[4]:blit(215, 250)
 
 	render_music_bar()
 	render_effects_bar()
