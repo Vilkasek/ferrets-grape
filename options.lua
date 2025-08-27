@@ -16,6 +16,12 @@ local options = {
 		"./assets/graphics/options/arrow_right_active.png",
 	},
 
+	labels_paths = {
+		"./assets/graphics/options/music_label.png",
+		"./assets/graphics/options/effects_label.png",
+		"./assets/graphics/options/menu_label.png",
+	},
+
 	arrows_idle = nil,
 	arrows_active = nil,
 
