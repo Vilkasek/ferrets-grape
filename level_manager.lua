@@ -1,4 +1,5 @@
 local levels = require("levels.levels")
+local portal = require("portal")
 
 local level_manager = {
 	background_paths = {
@@ -22,6 +23,7 @@ end
 function level_manager.load_level(level_index, player, tilemap, decorations, camera)
 	local level_config = levels[level_index]
 	if not level_config then
+		portal.despawn()
 		return
 	end
 
@@ -46,14 +48,28 @@ function level_manager.load_level(level_index, player, tilemap, decorations, cam
 	camera.update(player, tilemap)
 
 	level_manager.current_level_index = level_index
+
+	if level_config.portal_pos then
+		portal.spawn(level_config.portal_pos.x, level_config.portal_pos.y)
+	else
+		portal.despawn()
+	end
 end
 
 function level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine)
-	local player_check_x = player.pos_x + (player.width / 2)
-	local player_check_y = player.pos_y + player.height - 1
-	local tile_id = tilemap.get_tile_at(player_check_x, player_check_y)
+	if not portal.is_active then
+		return
+	end
 
-	if tile_id == 99 then
+	local player_rect = { x = player.pos_x, y = player.pos_y, w = player.width, h = player.height }
+	local portal_rect = { x = portal.pos_x, y = portal.pos_y, w = portal.width, h = portal.height }
+
+	if
+		player_rect.x < portal_rect.x + portal_rect.w
+		and player_rect.x + player_rect.w > portal_rect.x
+		and player_rect.y < portal_rect.y + portal_rect.h
+		and player_rect.y + player_rect.h > portal_rect.y
+	then
 		local next_level = level_manager.current_level_index + 1
 		if levels[next_level] then
 			level_manager.load_level(next_level, player, tilemap, decorations, camera)

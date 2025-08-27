@@ -6,6 +6,7 @@ local tilemap = require("tilemap")
 local decorations = require("decorations")
 local camera = require("camera")
 local options = require("options")
+local portal = require("portal")
 
 local music = sound.load("./assets/audio/music/background.wav")
 local footstep = sound.load("./assets/audio/sounds/footstep.wav")
@@ -15,6 +16,7 @@ local menu = sound.load("./assets/audio/sounds/menu.wav")
 main_menu.init(menu)
 player.init(footstep, jumpsound)
 level_manager.init()
+portal.init()
 options.init(footstep, jumpsound, music, menu)
 
 sound.loop(music)
@@ -28,6 +30,7 @@ local function update()
 		main_menu.update()
 	elseif state_machine.get_state() == "GAME" then
 		player.update()
+		portal.update()
 		camera.update(player, tilemap)
 		level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine)
 	elseif state_machine.get_state() == "OPTIONS" then
@@ -49,6 +52,7 @@ local function render()
 		end
 		tilemap.render()
 		decorations.render()
+		portal.render()
 		player.render()
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.render()
