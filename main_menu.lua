@@ -63,11 +63,18 @@ function main_menu.update()
 		clamp_actives()
 	end
 
-	if buttons.released.cross and (main_menu.active == 1 or main_menu.active == 2) then
+	if buttons.released.cross and main_menu.active == 1 then
 		main_menu.menusound:play(2)
 		level_manager.load_level(1, player, tilemap, decorations, camera)
+    level_manager.finished_levels = 0
 		state_machine.change_state("GAME")
 	end
+
+  if buttons.released.cross and main_menu.active == 2 then
+    main_menu.menusound:play(2)
+    level_manager.load_level(level_manager.finished_levels + 1, player, tilemap, decorations, camera)
+		state_machine.change_state("GAME")
+  end
 
 	if buttons.released.cross and main_menu.active == 3 then
 		main_menu.menusound:play(2)

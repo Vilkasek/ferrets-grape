@@ -6,10 +6,12 @@ local level_manager = {
 		"./assets/graphics/backgrounds/menu_background.png",
 		"./assets/graphics/backgrounds/level1.png",
 		"./assets/graphics/backgrounds/level2.png",
+		"./assets/graphics/backgrounds/level3.png",
 	},
 	backgrounds = nil,
 	current_background = nil,
 	current_level_index = 1,
+	finished_levels = 0,
 }
 
 function level_manager.init()
@@ -17,6 +19,7 @@ function level_manager.init()
 		image.load(level_manager.background_paths[1]),
 		image.load(level_manager.background_paths[2]),
 		image.load(level_manager.background_paths[3]),
+		image.load(level_manager.background_paths[4]),
 	}
 end
 
@@ -72,8 +75,10 @@ function level_manager.check_level_transition(player, tilemap, decorations, came
 	then
 		local next_level = level_manager.current_level_index + 1
 		if levels[next_level] then
+			level_manager.finished_levels = level_manager.finished_levels + 1
 			level_manager.load_level(next_level, player, tilemap, decorations, camera)
 		else
+			level_manager.finished_levels = 1
 			state_machine.change_state("MENU")
 		end
 	end
