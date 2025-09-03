@@ -38,8 +38,7 @@ return {
 	[5] = {
 		map_data_path = "levels.level5",
 		deco_data_path = "levels.level5_decorations",
-		tileset_path = "./assets/graphics/tilesets/level5.png",
-		deco_tileset_path = "./assets/graphics/tilesets/grass.png",
+		tileset_path = "./assets/graphics/tilesets/level5.png", deco_tileset_path = "./assets/graphics/tilesets/grass.png",
 		background_index = 6,
 		start_pos = { x = 32 * 0, y = 32 * 7 },
 		portal_pos = { x = 32 * 59, y = 32 * 25 },
