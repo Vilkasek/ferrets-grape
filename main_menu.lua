@@ -24,6 +24,14 @@ local main_menu = {
 	activable = { "START", "CONTINUE", "OPTIONS" },
 	active = 1,
 
+	logos_paths = {
+		"./assets/graphics/menu/shadow_logo.png",
+		"./assets/graphics/menu/shadowless_logo.png",
+	},
+	logos = {},
+
+	active_logo = 1,
+
 	menusound = nil,
 }
 
@@ -48,6 +56,11 @@ function main_menu.init(mn)
 		image.load(main_menu.active_paths[3]),
 	}
 
+	main_menu.logos = {
+		image.load(main_menu.logos_paths[1]),
+		image.load(main_menu.logos_paths[2]),
+	}
+
 	main_menu.menusound = mn
 end
 
@@ -66,38 +79,49 @@ function main_menu.update()
 	if buttons.released.cross and main_menu.active == 1 then
 		main_menu.menusound:play(2)
 		level_manager.load_level(1, player, tilemap, decorations, camera)
-    level_manager.finished_levels = 0
+		level_manager.finished_levels = 0
 		state_machine.change_state("GAME")
 	end
 
-  if buttons.released.cross and main_menu.active == 2 then
-    main_menu.menusound:play(2)
-    level_manager.load_level(level_manager.finished_levels + 1, player, tilemap, decorations, camera)
+	if buttons.released.cross and main_menu.active == 2 then
+		main_menu.menusound:play(2)
+		level_manager.load_level(level_manager.finished_levels + 1, player, tilemap, decorations, camera)
 		state_machine.change_state("GAME")
-  end
+	end
 
 	if buttons.released.cross and main_menu.active == 3 then
 		main_menu.menusound:play(2)
 		state_machine.change_state("OPTIONS")
 	end
+
+	if buttons.released.r then
+		main_menu.active_logo = 1
+	end
+
+	if buttons.released.l then
+		main_menu.active_logo = 2
+	end
 end
 
 function main_menu.render()
-	local ui_x = 200
+	local ui_x = 480 / 2 - 48
+	local logo_x = 480 / 2 - 120
 
 	if main_menu.active == 1 then
-		main_menu.actives[1]:blit(ui_x, 100)
-		main_menu.idles[2]:blit(ui_x, 150)
+		main_menu.actives[1]:blit(ui_x, 120)
+		main_menu.idles[2]:blit(ui_x, 160)
 		main_menu.idles[3]:blit(ui_x, 200)
 	elseif main_menu.active == 2 then
-		main_menu.idles[1]:blit(ui_x, 100)
-		main_menu.actives[2]:blit(ui_x, 150)
+		main_menu.idles[1]:blit(ui_x, 120)
+		main_menu.actives[2]:blit(ui_x, 160)
 		main_menu.idles[3]:blit(ui_x, 200)
 	elseif main_menu.active == 3 then
-		main_menu.idles[1]:blit(ui_x, 100)
-		main_menu.idles[2]:blit(ui_x, 150)
+		main_menu.idles[1]:blit(ui_x, 120)
+		main_menu.idles[2]:blit(ui_x, 160)
 		main_menu.actives[3]:blit(ui_x, 200)
 	end
+
+	main_menu.logos[main_menu.active_logo]:blit(logo_x, -10)
 end
 
 return main_menu
