@@ -26,4 +26,13 @@ return {
 		start_pos = { x = 32 * 0, y = 32 * 7 },
 		portal_pos = { x = 32 * 59, y = 32 * 25 },
 	},
+	[4] = {
+		map_data_path = "levels.level4",
+		deco_data_path = "levels.level4_decorations",
+		tileset_path = "./assets/graphics/tilesets/level4.png",
+		deco_tileset_path = "./assets/graphics/tilesets/grass.png",
+		background_index = 5,
+		start_pos = { x = 32 * 0, y = 32 * 7 },
+		portal_pos = { x = 32 * 59, y = 32 * 25 },
+	},
 }

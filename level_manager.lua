@@ -7,6 +7,8 @@ local level_manager = {
 		"./assets/graphics/backgrounds/level1.png",
 		"./assets/graphics/backgrounds/level2.png",
 		"./assets/graphics/backgrounds/level3.png",
+		"./assets/graphics/backgrounds/level4.png",
+		"./assets/graphics/backgrounds/level5.png",
 	},
 	backgrounds = nil,
 	current_background = nil,
@@ -20,6 +22,8 @@ function level_manager.init()
 		image.load(level_manager.background_paths[2]),
 		image.load(level_manager.background_paths[3]),
 		image.load(level_manager.background_paths[4]),
+		image.load(level_manager.background_paths[5]),
+		image.load(level_manager.background_paths[6]),
 	}
 end
 
