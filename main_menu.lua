@@ -121,7 +121,7 @@ function main_menu.render()
 		main_menu.actives[3]:blit(ui_x, 200)
 	end
 
-	main_menu.logos[main_menu.active_logo]:blit(logo_x, -10)
+	main_menu.logos[main_menu.active_logo]:blit(logo_x, 0)
 end
 
 return main_menu
