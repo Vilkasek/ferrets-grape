@@ -45,6 +45,7 @@ local Player = {
 
 local tilemap = require("tilemap")
 local camera = require("camera")
+local state_machine = require("state_machine")
 
 local function load_animation_frames(folder_path)
 	local frames = {}
@@ -188,6 +189,10 @@ local function handle_input()
 
 	if buttons.cross then
 		Player.jump_buffer_time = Player.jump_buffer_max
+	end
+
+	if buttons.released.start then
+		state_machine.change_state("PAUSE")
 	end
 end
 
