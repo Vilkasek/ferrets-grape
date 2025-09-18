@@ -6,8 +6,6 @@ local enemy = {
 	anim_speed = 4,
 }
 
-local math = require("math")
-
 local function load_animation()
 	enemy.animation = {
 		image.load(enemy.dir_path .. "/1.png"),
@@ -41,7 +39,7 @@ local function update_animation()
 end
 
 function enemy.update()
-  update_animation()
+	update_animation()
 end
 
 function enemy.render(pos_x, pos_y)
