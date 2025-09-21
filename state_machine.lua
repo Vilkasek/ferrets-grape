@@ -6,6 +6,7 @@ local state_machine = {
 		"GAME",
 		"OPTIONS",
 		"PAUSE",
+		"IN_GAME_OPTIONS",
 	},
 	state = "MENU",
 }
