@@ -4,7 +4,7 @@ return {
 		deco_data_path = "levels.level0_decoration",
 		tileset_path = "./assets/graphics/tilesets/level1.png",
 		deco_tileset_path = "./assets/graphics/tilesets/level1_decoration.png",
-		background_index = 2,
+		background_index = 13,
 		start_pos = { x = 32 * 0, y = 32 * 7 },
 		portal_pos = { x = 32 * 29, y = 32 * 7 },
 	},

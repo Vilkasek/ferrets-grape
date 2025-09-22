@@ -9,6 +9,7 @@ local options = require("options")
 local portal = require("portal")
 local pause = require("pause")
 local in_game_options = require("in_game_options")
+local tutorial = require("tutorial")
 
 local music = sound.load("./assets/audio/music/background.wav")
 local footstep = sound.load("./assets/audio/sounds/footstep.wav")
@@ -22,6 +23,7 @@ portal.init()
 options.init(footstep, jumpsound, music, menu)
 pause.init()
 in_game_options.init(footstep, jumpsound, music, menu)
+tutorial.init()
 
 sound.loop(music)
 sound.play(music, 1)
@@ -37,6 +39,7 @@ local function update()
 		portal.update()
 		camera.update(player, tilemap)
 		level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine)
+    tutorial.update()
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.update()
 	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
@@ -62,6 +65,7 @@ local function render()
 		decorations.render()
 		portal.render()
 		player.render()
+    tutorial.render()
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.render()
 	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
