@@ -78,9 +78,10 @@ function main_menu.update()
 
 	if buttons.released.cross and main_menu.active == 1 then
 		main_menu.menusound:play(2)
-		level_manager.load_level(1, player, tilemap, decorations, camera)
-		level_manager.finished_levels = 0
-		state_machine.change_state("GAME")
+
+    level_manager.load_level(0, player, tilemap, decorations, camera)
+    level_manager.finished_levels = 0
+    state_machine.change_state("GAME")
 	end
 
 	if buttons.released.cross and main_menu.active == 2 then
