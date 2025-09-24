@@ -16,10 +16,10 @@ local tutorial = {
 	jump = nil,
 
 	dpad_index = 1,
-	dpad_time = 0.1,
+	dpad_time = 0.05,
 
 	jump_index = 1,
-	jump_time = 0.1,
+	jump_time = 0.05,
 }
 
 function tutorial.init()
@@ -43,7 +43,7 @@ end
 
 local function update_jump_animation()
 	tutorial.jump_index = tutorial.jump_index + tutorial.jump_time
-	if tutorial.jump_index >= 2 then
+	if tutorial.jump_index >= 3 then
 		tutorial.jump_index = 1
 	end
 end
@@ -54,8 +54,8 @@ function tutorial.update()
 end
 
 function tutorial.render()
-	tutorial.dpad[math.floor(tutorial.dpad_index)]:blit(-camera.x + 64, -camera.y + 100)
-	tutorial.jump[math.floor(tutorial.jump_index)]:blit(-camera.x + 256, -camera.y + 100)
+	tutorial.dpad[math.floor(tutorial.dpad_index)]:blit(-camera.x + 64, -camera.y + 250)
+	tutorial.jump[math.floor(tutorial.jump_index)]:blit(-camera.x + 528, -camera.y + 240)
 end
 
 return tutorial

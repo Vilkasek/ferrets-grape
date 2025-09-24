@@ -11,6 +11,8 @@ local tilemap
 local camera = require("camera")
 local math = require("math")
 
+local ONE_WAY_PLATFORM_IDS = { 25, 26, 27 }
+
 local function load_tileset(path)
 	Tilemap.tileset = image.load(path)
 end
@@ -39,6 +41,19 @@ function Tilemap.init(path, mapdata)
 	load_map(Tilemap.tileset, Tilemap.mapdata)
 end
 
+local function is_one_way_platform(tile_id)
+	if not tile_id then
+		return false
+	end
+
+	for _, platform_id in ipairs(ONE_WAY_PLATFORM_IDS) do
+		if tile_id == platform_id then
+			return true
+		end
+	end
+	return false
+end
+
 local function is_tile_solid(tile_x, tile_y)
 	if tile_x < 1 or tile_x > Tilemap.map_width or tile_y < 1 or tile_y > Tilemap.map_height then
 		return true
@@ -53,7 +68,7 @@ local function is_tile_solid(tile_x, tile_y)
 		return true
 	end
 
-	return tile_id ~= 0 and tile_id ~= 99
+	return tile_id ~= 0 and tile_id ~= 24 and tile_id ~= 25 and tile_id ~= 26
 end
 
 function Tilemap.check_solid(x, y, width, height)
@@ -77,6 +92,40 @@ function Tilemap.check_solid(x, y, width, height)
 	return false
 end
 
+function Tilemap.check_one_way_solid(x, y, width, height, vel_y)
+	if not x or not y or not width or not height or not vel_y then
+		return false, nil
+	end
+
+	if vel_y <= 0 then
+		return false, nil
+	end
+
+	local left_tile = math.floor(x / Tilemap.tilesize) + 1
+	local right_tile = math.floor((x + width - 1) / Tilemap.tilesize) + 1
+	local top_tile = math.floor(y / Tilemap.tilesize) + 1
+	local bottom_tile = math.floor((y + height - 1) / Tilemap.tilesize) + 1
+
+	for tile_y = top_tile, bottom_tile do
+		for tile_x = left_tile, right_tile do
+			if tile_x >= 1 and tile_x <= Tilemap.map_width and tile_y >= 1 and tile_y <= Tilemap.map_height then
+				local tile_id = Tilemap.mapdata[tile_y] and Tilemap.mapdata[tile_y][tile_x]
+
+				if tile_id and is_one_way_platform(tile_id) then
+					local tile_top = (tile_y - 1) * Tilemap.tilesize
+					local player_bottom_prev = y - vel_y + height
+
+					if player_bottom_prev <= tile_top + 4 then -- 4 pixel tolerance
+						return true, tile_y
+					end
+				end
+			end
+		end
+	end
+
+	return false, nil
+end
+
 function Tilemap.resolve_collision(x, y, facing_right, width, height, vel_x, vel_y)
 	if not x or not y or not width or not height or not vel_x or not vel_y then
 		return x or 0, y or 0, false, false
@@ -98,8 +147,17 @@ function Tilemap.resolve_collision(x, y, facing_right, width, height, vel_x, vel
 
 	if vel_y ~= 0 then
 		local test_y = y + vel_y
+
 		if not Tilemap.check_solid(final_x, test_y, width, height) then
-			final_y = test_y
+			local one_way_hit, tile_y = Tilemap.check_one_way_solid(final_x, test_y, width, height, vel_y)
+
+			if one_way_hit and vel_y > 0 then
+				local tile_top = (tile_y - 1) * Tilemap.tilesize
+				final_y = tile_top - height
+				hit_y = true
+			else
+				final_y = test_y
+			end
 		else
 			hit_y = true
 		end
@@ -121,6 +179,33 @@ function Tilemap.get_tile_at(x, y)
 	end
 
 	return nil
+end
+
+function Tilemap.is_on_one_way_platform(x, y, width, height)
+	if not x or not y or not width or not height then
+		return false
+	end
+
+	-- Check the tile directly below the player
+	local check_y = y + height + 1
+	local left_tile = math.floor(x / Tilemap.tilesize) + 1
+	local right_tile = math.floor((x + width - 1) / Tilemap.tilesize) + 1
+	local tile_y = math.floor(check_y / Tilemap.tilesize) + 1
+
+	for tile_x = left_tile, right_tile do
+		if tile_x >= 1 and tile_x <= Tilemap.map_width and tile_y >= 1 and tile_y <= Tilemap.map_height then
+			local tile_id = Tilemap.mapdata[tile_y] and Tilemap.mapdata[tile_y][tile_x]
+			if tile_id and is_one_way_platform(tile_id) then
+				-- Make sure player is actually on top of the platform
+				local tile_top = (tile_y - 1) * Tilemap.tilesize
+				if y + height <= tile_top + 2 then -- 2 pixel tolerance
+					return true
+				end
+			end
+		end
+	end
+
+	return false
 end
 
 function Tilemap.render()

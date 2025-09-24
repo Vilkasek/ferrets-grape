@@ -39,7 +39,7 @@ local function update()
 		portal.update()
 		camera.update(player, tilemap)
 		level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine)
-    tutorial.update()
+		tutorial.update()
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.update()
 	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
@@ -65,7 +65,10 @@ local function render()
 		decorations.render()
 		portal.render()
 		player.render()
-    tutorial.render()
+
+		if level_manager.current_level_index == 0 then
+			tutorial.render()
+		end
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.render()
 	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
