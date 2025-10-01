@@ -6,17 +6,8 @@ local enemy = {
 	anim_speed = 4,
 }
 
-local function load_animation()
-	enemy.animation = {
-		image.load(enemy.dir_path .. "/1.png"),
-		image.load(enemy.dir_path .. "/2.png"),
-	}
-end
-
 function enemy.init(path)
 	enemy.dir_path = path
-
-	load_animation()
 end
 
 local function update_animation()
