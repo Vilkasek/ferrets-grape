@@ -16,6 +16,8 @@ local footstep = sound.load("./assets/audio/sounds/footstep.wav")
 local jumpsound = sound.load("./assets/audio/sounds/jump.wav")
 local menu = sound.load("./assets/audio/sounds/menu.wav")
 
+local tutorial_ended = false
+
 main_menu.init(menu)
 player.init(footstep, jumpsound)
 level_manager.init()
@@ -39,13 +41,14 @@ local function update()
 		portal.update()
 		camera.update(player, tilemap)
 		level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine)
-		tutorial.update()
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.update()
 	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
 		in_game_options.update()
 	elseif state_machine.get_state() == "PAUSE" then
 		pause.update()
+	elseif state_machine.get_state() == "TUTORIAL" then
+		tutorial.update()
 	end
 end
 
@@ -65,16 +68,14 @@ local function render()
 		decorations.render()
 		portal.render()
 		player.render()
-
-		if level_manager.current_level_index == 0 then
-			tutorial.render()
-		end
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.render()
 	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
 		in_game_options.render()
 	elseif state_machine.get_state() == "PAUSE" then
 		pause.render()
+	elseif state_machine.get_state() == "TUTORIAL" then
+		tutorial.render()
 	end
 	screen.flip()
 end
