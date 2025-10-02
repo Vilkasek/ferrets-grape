@@ -10,13 +10,12 @@ local portal = require("portal")
 local pause = require("pause")
 local in_game_options = require("in_game_options")
 local tutorial = require("tutorial")
+local animation = require("animation")
 
 local music = sound.load("./assets/audio/music/background.wav")
 local footstep = sound.load("./assets/audio/sounds/footstep.wav")
 local jumpsound = sound.load("./assets/audio/sounds/jump.wav")
 local menu = sound.load("./assets/audio/sounds/menu.wav")
-
-local tutorial_ended = false
 
 main_menu.init(menu)
 player.init(footstep, jumpsound)
@@ -26,6 +25,7 @@ options.init(footstep, jumpsound, music, menu)
 pause.init()
 in_game_options.init(footstep, jumpsound, music, menu)
 tutorial.init()
+animation.init()
 
 sound.loop(music)
 sound.play(music, 1)
@@ -36,6 +36,8 @@ local function update()
 
 	if state_machine.get_state() == "MENU" then
 		main_menu.update()
+	elseif state_machine.get_state() == "ANIMATION" then
+		animation.update(player, tilemap, decorations, camera, state_machine)
 	elseif state_machine.get_state() == "GAME" then
 		player.update()
 		portal.update()
@@ -59,6 +61,8 @@ local function render()
 			image.blit(menu_bg, 0, 0)
 		end
 		main_menu.render()
+	elseif state_machine.get_state() == "ANIMATION" then
+		animation.render()
 	elseif state_machine.get_state() == "GAME" then
 		local current_background = level_manager.get_current_background()
 		if current_background then

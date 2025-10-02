@@ -8,6 +8,7 @@ local state_machine = {
 		"PAUSE",
 		"IN_GAME_OPTIONS",
 		"TUTORIAL",
+		"ANIMATION",
 	},
 	state = "MENU",
 }
