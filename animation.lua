@@ -1,19 +1,50 @@
 local level_manager = require("level_manager")
 
 local animation = {
-  current_frame = 1,
+  buffer = {},
+  buffer_size = 10,
+
+  display_frame_index = 1,
+  highest_loaded_frame = 0,
+
   total_frames = 278,
-  animation_speed = 0.2,
+  animation_speed = 0.4,
   base_path = "./assets/graphics/cutscenes/first_animation/",
-  current_image = nil,
 }
 
-function animation.init() end
+function animation.init()
+  animation.buffer = {}
+  animation.display_frame_index = 1
+  animation.highest_loaded_frame = 0
+
+  for i = 1, animation.buffer_size do
+    if i <= animation.total_frames then
+      local path = animation.base_path .. i .. ".png"
+      local buffer_index = ((i - 1) % animation.buffer_size) + 1
+      animation.buffer[buffer_index] = image.load(path)
+      animation.highest_loaded_frame = i
+    end
+  end
+end
 
 function animation.update(player, tilemap, decorations, camera, state_machine)
-  animation.current_frame = animation.current_frame + animation.animation_speed
+  animation.display_frame_index = animation.display_frame_index + animation.animation_speed
 
-  if animation.current_frame >= animation.total_frames or buttons.released.start then
+  local next_needed_frame = math.floor(animation.display_frame_index) + animation.buffer_size - 1
+  if
+      next_needed_frame > animation.highest_loaded_frame
+      and animation.highest_loaded_frame < animation.total_frames
+  then
+    local frame_to_load = animation.highest_loaded_frame + 1
+    local path = animation.base_path .. frame_to_load .. ".png"
+
+    local buffer_index = ((frame_to_load - 1) % animation.buffer_size) + 1
+
+    animation.buffer[buffer_index] = image.load(path)
+    animation.highest_loaded_frame = frame_to_load
+  end
+
+  if animation.display_frame_index >= animation.total_frames or buttons.released.start then
     animation.cleanup()
     level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine)
     state_machine.change_state("TUTORIAL")
@@ -21,24 +52,23 @@ function animation.update(player, tilemap, decorations, camera, state_machine)
 end
 
 function animation.render()
-  if animation.current_image then
-    image.free(animation.current_image)
+  local frame_to_draw = math.floor(animation.display_frame_index)
+
+  if frame_to_draw > animation.total_frames then
+    frame_to_draw = animation.total_frames
   end
 
-  local frame_num = math.floor(animation.current_frame)
-  animation.current_image = image.load(animation.base_path .. frame_num .. ".png")
+  local buffer_index = ((frame_to_draw - 1) % animation.buffer_size) + 1
+  local current_image = animation.buffer[buffer_index]
 
-  if animation.current_image then
-    animation.current_image:blit(0, 0)
+  if current_image then
+    current_image:blit(0, 0)
   end
 end
 
 function animation.cleanup()
-  if animation.current_image then
-    image.free(animation.current_image)
-    animation.current_image = nil
-  end
-  animation.current_frame = 1
+  animation.buffer = {}
+  collectgarbage()
 end
 
 return animation
