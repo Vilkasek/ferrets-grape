@@ -1,52 +1,31 @@
 local level_manager = require("level_manager")
-local math = require("math")
 
 local animation = {
-	animations = {
-		first = {},
-	},
-	animation_index = 1,
+	current_frame = 1,
+	total_frames = 278,
 	animation_speed = 0.2,
+	base_path = "./assets/graphics/cutscenes/first/",
+	current_image = nil,
 }
 
-local function load_images_from_folder(path)
-	local imgs = {}
-	local list = files.list(path)
+function animation.update(player, tilemap, decorations, camera, state_machine)
+	animation.current_frame = animation.current_frame + animation.animation_speed
 
-	for i = 1, #list do
-		local f = list[i]
-		if not f.directory then
-			local name = string.lower(f.name)
-			if name:match("%.png$") or name:match("%.jpg$") then
-				local img = image.load(path .. f.name)
-				if img then
-					table.insert(imgs, img)
-				end
-			end
-		end
-	end
-
-	return imgs
-end
-
-function animation.init()
-	animation.animations.first = load_images_from_folder("./assets/graphics/cutscenes/first_animation/")
-end
-
-local function update_first(player, tilemap, decorations, camera, state_machine)
-	animation.animation_index = animation.animation_index + animation.animation_speed
-	if animation.animation_index >= #animation.animations.first then
+	if animation.current_frame >= animation.total_frames then
 		level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine)
 		state_machine.change_state("GAME")
 	end
 end
 
-function animation.update(player, tilemap, decorations, camera, state_machine)
-	update_first(player, tilemap, decorations, camera, state_machine)
-end
-
 function animation.render()
-	animation.animations.first[math.floor(animation.animation_index)]:blit(0, 0)
-end
+	if animation.current_image then
+		image.free(animation.current_image)
+	end
 
-return animation
+	local frame_num = math.floor(animation.current_frame)
+	animation.current_image = image.load(animation.base_path .. frame_num .. ".png")
+
+	if animation.current_image then
+		animation.current_image:blit(0, 0)
+	end
+end

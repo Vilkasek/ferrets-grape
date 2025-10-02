@@ -25,7 +25,6 @@ options.init(footstep, jumpsound, music, menu)
 pause.init()
 in_game_options.init(footstep, jumpsound, music, menu)
 tutorial.init()
-animation.init()
 
 sound.loop(music)
 sound.play(music, 1)
