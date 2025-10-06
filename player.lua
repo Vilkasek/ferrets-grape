@@ -1,3 +1,5 @@
+local enemy = require("enemy")
+
 local Player = {
 	animations = {
 		idle = {},
@@ -45,6 +47,8 @@ local Player = {
 	drop_through_platform = false,
 	drop_through_timer = 0,
 	drop_through_max_time = 10,
+
+	lives = 3,
 }
 
 local tilemap = require("tilemap")
@@ -250,7 +254,6 @@ local function resolve_collision_with_one_way(pos_x, pos_y, width, height, vel_x
 	local hit_x = false
 	local hit_y = false
 
-	-- Handle horizontal movement first
 	if vel_x ~= 0 then
 		local test_x = pos_x + vel_x * Player.speed
 		if not tilemap.check_solid(test_x, pos_y, width, height) then
@@ -260,18 +263,14 @@ local function resolve_collision_with_one_way(pos_x, pos_y, width, height, vel_x
 		end
 	end
 
-	-- Handle vertical movement
 	if vel_y ~= 0 then
 		local test_y = pos_y + vel_y
 
-		-- Check solid tiles first
 		if not tilemap.check_solid(final_x, test_y, width, height) then
-			-- Only check one-way platforms when moving down and not dropping through
 			if vel_y > 0 and not Player.drop_through_platform then
 				local one_way_hit, tile_y = tilemap.check_one_way_solid(final_x, test_y, width, height, vel_y)
 
 				if one_way_hit then
-					-- Position player on top of the one-way platform
 					local tile_top = (tile_y - 1) * 32
 					final_y = tile_top - height
 					hit_y = true
@@ -279,11 +278,9 @@ local function resolve_collision_with_one_way(pos_x, pos_y, width, height, vel_x
 					final_y = test_y
 				end
 			else
-				-- Moving up or dropping through - no one-way collision
 				final_y = test_y
 			end
 		else
-			-- Hit a solid tile
 			hit_y = true
 		end
 	end
@@ -321,25 +318,15 @@ local function update_pos()
 	end
 
 	if Player.is_on_ground and Player.vel_y >= 0 and not Player.drop_through_platform then
-		-- Check one pixel below the player
 		local ground_check_y = Player.pos_y + Player.height + 1
 
-		-- Check for solid ground
 		local on_solid_ground = tilemap.check_solid
 			and tilemap.check_solid(Player.pos_x, ground_check_y, Player.width, 1)
 
-		-- Check for one-way platform
 		local on_one_way = false
 		if tilemap.check_one_way_solid then
-			local platform_hit, tile_y = tilemap.check_one_way_solid(
-				Player.pos_x,
-				ground_check_y,
-				Player.width,
-				1,
-				1 -- vel_y = 1 for downward check
-			)
+			local platform_hit, tile_y = tilemap.check_one_way_solid(Player.pos_x, ground_check_y, Player.width, 1, 1)
 			if platform_hit then
-				-- Make sure we're actually on top of the platform
 				local tile_top = (tile_y - 1) * 32
 				if Player.pos_y + Player.height <= tile_top + 2 then
 					on_one_way = true
@@ -347,7 +334,6 @@ local function update_pos()
 			end
 		end
 
-		-- If not on any ground, start falling
 		if not on_solid_ground and not on_one_way then
 			Player.is_on_ground = false
 		end
@@ -355,6 +341,18 @@ local function update_pos()
 	if Player.last_footstep_time > 0 then
 		Player.last_footstep_time = Player.last_footstep_time - 1
 	end
+end
+
+function Player.enemy_collided()
+	return enemy.check_collision(Player.pos_x, Player.pos_y, Player.width, Player.height)
+end
+
+function Player.remove_live(number)
+	Player.lives = Player.lives - number
+end
+
+function Player.died()
+	return Player.lives <= 0
 end
 
 function Player.update()

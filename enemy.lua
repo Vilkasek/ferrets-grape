@@ -29,7 +29,7 @@ function Enemy.spawn(x, y, width, height, speed)
 		speed = speed or 1,
 		start_x = x,
 		range = 64,
-		direction = 1,
+		direction = -1,
 		facing_right = true,
 	}
 	table.insert(Enemy.enemies, enemy)

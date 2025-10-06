@@ -52,6 +52,15 @@ local function update()
 		enemy.update()
 		camera.update(player, tilemap)
 		level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine, animation_module)
+
+    if player.enemy_collided() then
+      player.remove_live(1)
+      level_manager.load_level(level_manager.current_level_index, player, tilemap, decorations, camera)
+    end
+
+    if player.died() then
+      state_machine.change_state("MENU")
+    end
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.update()
 	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
