@@ -1,5 +1,6 @@
 local levels = require("levels.levels")
 local portal = require("portal")
+local enemy = require("enemy")
 
 local level_manager = {
 	background_paths = {
@@ -21,7 +22,7 @@ local level_manager = {
 	current_background = nil,
 	current_level_index = 1,
 	finished_levels = 0,
-  music = nil,
+	music = nil,
 }
 
 function level_manager.init(m)
@@ -40,10 +41,16 @@ function level_manager.init(m)
 		image.load(level_manager.background_paths[12]),
 		image.load(level_manager.background_paths[13]),
 	}
-  level_manager.music = m
+	level_manager.music = m
 end
 
 function level_manager.load_level(level_index, player, tilemap, decorations, camera)
+	enemy.clear()
+
+	if level_index == 1 then
+		enemy.spawn(32 * 10, 32 * 7, 32, 32, 1)
+	end
+
 	local level_config = levels[level_index]
 	if not level_config then
 		portal.despawn()

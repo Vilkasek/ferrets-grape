@@ -52,20 +52,20 @@ local function update_enemy_movement(enemy)
 		if enemy.pos_x >= enemy.start_x + enemy.range then
 			enemy.pos_x = enemy.start_x + enemy.range
 			enemy.direction = -1
-			if enemy.facing_right then
+			if not enemy.facing_right then
 				flip_frame(Enemy.animation_frames[1])
 				flip_frame(Enemy.animation_frames[2])
-				enemy.facing_right = false
+				enemy.facing_right = true
 			end
 		end
 	else
 		if enemy.pos_x <= enemy.start_x then
 			enemy.pos_x = enemy.start_x
 			enemy.direction = 1
-			if not enemy.facing_right then
+			if enemy.facing_right then
 				flip_frame(Enemy.animation_frames[1])
 				flip_frame(Enemy.animation_frames[2])
-				enemy.facing_right = true
+				enemy.facing_right = false
 			end
 		end
 	end
