@@ -37,6 +37,8 @@ function animation.set_animation(animation_name)
 end
 
 function animation.init(animation_name, m)
+	animation.cleanup()
+
 	animation_name = animation_name or "first"
 	animation.set_animation(animation_name)
 

@@ -36,77 +36,80 @@ enemy.init()
 hud.init()
 
 local function update()
-	buttons.read()
+  buttons.read()
 
-	if state_machine.get_state() == "MENU" then
-		main_menu.update()
-	elseif state_machine.get_state() == "ANIMATION" then
-		sound.stop(music)
-		local prev_state = state_machine.get_state()
-		animation_module.update(player, tilemap, decorations, camera, state_machine)
+  if state_machine.get_state() == "MENU" then
+    main_menu.update()
+    animation_module.cleanup()
+  elseif state_machine.get_state() == "ANIMATION" then
+    sound.stop(music)
+    local prev_state = state_machine.get_state()
+    animation_module.update(player, tilemap, decorations, camera, state_machine)
 
-		if state_machine.get_state() ~= prev_state then
-			animation_module.cleanup()
-		end
-	elseif state_machine.get_state() == "GAME" then
-		player.update()
-		portal.update()
-		enemy.update()
-		camera.update(player, tilemap)
-		level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine, animation_module)
+    if state_machine.get_state() ~= prev_state then
+      animation_module.cleanup()
+    end
+  elseif state_machine.get_state() == "GAME" then
+    animation_module.cleanup()
 
-		if player.enemy_collided() then
-			player.remove_live(1)
-			level_manager.load_level(level_manager.current_level_index, player, tilemap, decorations, camera)
-		end
+    player.update()
+    portal.update()
+    enemy.update()
+    camera.update(player, tilemap)
+    level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine, animation_module)
 
-		if player.died() then
-			state_machine.change_state("MENU")
-		end
-	elseif state_machine.get_state() == "OPTIONS" then
-		options.update()
-	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
-		in_game_options.update()
-	elseif state_machine.get_state() == "PAUSE" then
-		pause.update()
-	elseif state_machine.get_state() == "TUTORIAL" then
-		tutorial.update()
-	end
+    if player.enemy_collided() then
+      player.remove_live(1)
+      level_manager.load_level(level_manager.current_level_index, player, tilemap, decorations, camera)
+    end
+
+    if player.died() then
+      state_machine.change_state("MENU")
+    end
+  elseif state_machine.get_state() == "OPTIONS" then
+    options.update()
+  elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
+    in_game_options.update()
+  elseif state_machine.get_state() == "PAUSE" then
+    pause.update()
+  elseif state_machine.get_state() == "TUTORIAL" then
+    tutorial.update()
+  end
 end
 
 local function render()
-	if state_machine.get_state() == "MENU" then
-		local menu_bg = level_manager.backgrounds[1]
-		if menu_bg then
-			image.blit(menu_bg, 0, 0)
-		end
-		main_menu.render()
-	elseif state_machine.get_state() == "ANIMATION" then
-		animation_module.render()
-	elseif state_machine.get_state() == "GAME" then
-		local current_background = level_manager.get_current_background()
-		if current_background then
-			image.blit(current_background, 0, 0)
-		end
-		tilemap.render()
-		decorations.render()
-		portal.render()
-		enemy.render()
-		player.render()
-		hud.render(player)
-	elseif state_machine.get_state() == "OPTIONS" then
-		options.render()
-	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
-		in_game_options.render()
-	elseif state_machine.get_state() == "PAUSE" then
-		pause.render()
-	elseif state_machine.get_state() == "TUTORIAL" then
-		tutorial.render()
-	end
-	screen.flip()
+  if state_machine.get_state() == "MENU" then
+    local menu_bg = level_manager.backgrounds[1]
+    if menu_bg then
+      image.blit(menu_bg, 0, 0)
+    end
+    main_menu.render()
+  elseif state_machine.get_state() == "ANIMATION" then
+    animation_module.render()
+  elseif state_machine.get_state() == "GAME" then
+    local current_background = level_manager.get_current_background()
+    if current_background then
+      image.blit(current_background, 0, 0)
+    end
+    tilemap.render()
+    decorations.render()
+    portal.render()
+    enemy.render()
+    player.render()
+    hud.render(player)
+  elseif state_machine.get_state() == "OPTIONS" then
+    options.render()
+  elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
+    in_game_options.render()
+  elseif state_machine.get_state() == "PAUSE" then
+    pause.render()
+  elseif state_machine.get_state() == "TUTORIAL" then
+    tutorial.render()
+  end
+  screen.flip()
 end
 
 while true do
-	update()
-	render()
+  update()
+  render()
 end
