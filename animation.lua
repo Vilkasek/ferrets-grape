@@ -26,7 +26,7 @@ local animation = {
 		},
 	},
 
-  music = nil,
+	music = nil,
 }
 
 function animation.set_animation(animation_name)
@@ -53,7 +53,7 @@ function animation.init(animation_name, m)
 		end
 	end
 
-  animation.music = m
+	animation.music = m
 end
 
 function animation.update(player, tilemap, decorations, camera, state_machine)
@@ -87,7 +87,7 @@ function animation.update(player, tilemap, decorations, camera, state_machine)
 				state_machine.change_state("MENU")
 			end
 		else
-      sound.play(animation.music, 1)
+			sound.play(animation.music, 1)
 			state_machine.change_state(animation.current_animation_config.next_state)
 		end
 	end
@@ -109,8 +109,8 @@ function animation.render()
 end
 
 function animation.cleanup()
-	animation.buffer = {}
 	collectgarbage()
+	animation.buffer = {}
 end
 
 return animation

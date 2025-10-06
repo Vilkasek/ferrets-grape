@@ -12,6 +12,7 @@ local in_game_options = require("in_game_options")
 local tutorial = require("tutorial")
 local animation_module = require("animation")
 local enemy = require("enemy")
+local hud = require("hud")
 
 local music = sound.load("./assets/audio/music/background.wav")
 local footstep = sound.load("./assets/audio/sounds/footstep.wav")
@@ -32,6 +33,7 @@ in_game_options.init(footstep, jumpsound, music, menu)
 tutorial.init()
 animation_module.init(_, music)
 enemy.init()
+hud.init()
 
 local function update()
 	buttons.read()
@@ -53,14 +55,14 @@ local function update()
 		camera.update(player, tilemap)
 		level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine, animation_module)
 
-    if player.enemy_collided() then
-      player.remove_live(1)
-      level_manager.load_level(level_manager.current_level_index, player, tilemap, decorations, camera)
-    end
+		if player.enemy_collided() then
+			player.remove_live(1)
+			level_manager.load_level(level_manager.current_level_index, player, tilemap, decorations, camera)
+		end
 
-    if player.died() then
-      state_machine.change_state("MENU")
-    end
+		if player.died() then
+			state_machine.change_state("MENU")
+		end
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.update()
 	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
@@ -91,6 +93,7 @@ local function render()
 		portal.render()
 		enemy.render()
 		player.render()
+		hud.render(player)
 	elseif state_machine.get_state() == "OPTIONS" then
 		options.render()
 	elseif state_machine.get_state() == "IN_GAME_OPTIONS" then
