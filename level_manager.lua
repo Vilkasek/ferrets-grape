@@ -21,9 +21,10 @@ local level_manager = {
 	current_background = nil,
 	current_level_index = 1,
 	finished_levels = 0,
+  music = nil,
 }
 
-function level_manager.init()
+function level_manager.init(m)
 	level_manager.backgrounds = {
 		image.load(level_manager.background_paths[1]),
 		image.load(level_manager.background_paths[2]),
@@ -39,6 +40,7 @@ function level_manager.init()
 		image.load(level_manager.background_paths[12]),
 		image.load(level_manager.background_paths[13]),
 	}
+  level_manager.music = m
 end
 
 function level_manager.load_level(level_index, player, tilemap, decorations, camera)
@@ -77,7 +79,7 @@ function level_manager.load_level(level_index, player, tilemap, decorations, cam
 	end
 end
 
-function level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine)
+function level_manager.check_level_transition(player, tilemap, decorations, camera, state_machine, animation_module)
 	if not portal.is_active then
 		return
 	end
@@ -91,9 +93,16 @@ function level_manager.check_level_transition(player, tilemap, decorations, came
 		and player_rect.y < portal_rect.y + portal_rect.h
 		and player_rect.y + player_rect.h > portal_rect.y
 	then
+		level_manager.finished_levels = level_manager.finished_levels + 1
+
+		if level_manager.current_level_index == 6 then
+			animation_module.init("second", level_manager.music)
+			state_machine.change_state("ANIMATION")
+			return
+		end
+
 		local next_level = level_manager.current_level_index + 1
 		if levels[next_level] then
-			level_manager.finished_levels = level_manager.finished_levels + 1
 			level_manager.load_level(next_level, player, tilemap, decorations, camera)
 		else
 			level_manager.finished_levels = 1
