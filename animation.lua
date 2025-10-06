@@ -2,13 +2,13 @@ local level_manager = require("level_manager")
 
 local animation = {
   buffer = {},
-  buffer_size = 10,
+  buffer_size = 3,
 
   display_frame_index = 1,
   highest_loaded_frame = 0,
 
   total_frames = 278,
-  animation_speed = 0.4,
+  animation_speed = 0.2,
   base_path = "./assets/graphics/cutscenes/first_animation/",
 }
 
@@ -21,7 +21,7 @@ function animation.init()
     if i <= animation.total_frames then
       local path = animation.base_path .. i .. ".png"
       local buffer_index = ((i - 1) % animation.buffer_size) + 1
-      animation.buffer[buffer_index] = image.load(path)
+      animation.buffer[buffer_index] = image.loadv(path)
       animation.highest_loaded_frame = i
     end
   end

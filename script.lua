@@ -37,6 +37,7 @@ local function update()
   if state_machine.get_state() == "MENU" then
     main_menu.update()
   elseif state_machine.get_state() == "ANIMATION" then
+    sound.stop(music)
     local prev_state = state_machine.get_state()
     animation.update(player, tilemap, decorations, camera, state_machine)
 
@@ -55,6 +56,8 @@ local function update()
   elseif state_machine.get_state() == "PAUSE" then
     pause.update()
   elseif state_machine.get_state() == "TUTORIAL" then
+    sound.play(music, 1)
+
     tutorial.update()
   end
 end

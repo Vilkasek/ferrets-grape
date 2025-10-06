@@ -81,7 +81,7 @@ function main_menu.update()
 
     level_manager.load_level(0, player, tilemap, decorations, camera)
     level_manager.finished_levels = 0
-    state_machine.change_state("TUTORIAL")
+    state_machine.change_state("ANIMATION")
   end
 
   if buttons.released.cross and main_menu.active == 2 then
