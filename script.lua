@@ -73,6 +73,7 @@ local function update()
   elseif state_machine.get_state() == "PAUSE" then
     pause.update()
   elseif state_machine.get_state() == "TUTORIAL" then
+    animation_module.cleanup()
     tutorial.update()
   end
 end

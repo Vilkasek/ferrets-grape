@@ -11,14 +11,14 @@ local animation = {
 
 	animations = {
 		first = {
-			total_frames = 278,
+			total_frames = 180,
 			animation_speed = 0.2,
 			base_path = "./assets/graphics/cutscenes/first_animation/",
 			next_state = "TUTORIAL",
 			load_next_level = false,
 		},
 		second = {
-			total_frames = 150,
+			total_frames = 91,
 			animation_speed = 0.2,
 			base_path = "./assets/graphics/cutscenes/second_animation/",
 			next_state = "GAME",
@@ -50,6 +50,10 @@ function animation.init(animation_name, m)
 		if i <= animation.current_animation_config.total_frames then
 			local path = animation.current_animation_config.base_path .. i .. ".png"
 			local buffer_index = ((i - 1) % animation.buffer_size) + 1
+			if animation_name == "second" then
+				animation.buffer[buffer_index] = image.load(path)
+				animation.highest_loaded_frame = i
+			end
 			animation.buffer[buffer_index] = image.loadv(path)
 			animation.highest_loaded_frame = i
 		end
