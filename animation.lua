@@ -50,19 +50,22 @@ function animation.init(animation_name, m)
 		if i <= animation.current_animation_config.total_frames then
 			local path = animation.current_animation_config.base_path .. i .. ".png"
 			local buffer_index = ((i - 1) % animation.buffer_size) + 1
-			if animation_name == "second" then
-				animation.buffer[buffer_index] = image.load(path)
-				animation.highest_loaded_frame = i
-			end
-			animation.buffer[buffer_index] = image.loadv(path)
+
+      animation.buffer[buffer_index] = image.loadv(path)
 			animation.highest_loaded_frame = i
 		end
 	end
+
+  if animation.display_frame_index % 10 == 0 then
+    animation.cleanup()
+  end
 
 	animation.music = m
 end
 
 function animation.update(player, tilemap, decorations, camera, state_machine)
+  collectgarbage("collect")
+
 	animation.display_frame_index = animation.display_frame_index + animation.current_animation_config.animation_speed
 
 	local next_needed_frame = math.floor(animation.display_frame_index) + animation.buffer_size - 1
@@ -115,8 +118,9 @@ function animation.render()
 end
 
 function animation.cleanup()
-	collectgarbage()
 	animation.buffer = {}
+	collectgarbage("collect")
+	collectgarbage("collect")
 end
 
 return animation
