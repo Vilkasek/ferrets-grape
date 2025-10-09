@@ -47,10 +47,6 @@ end
 function level_manager.load_level(level_index, player, tilemap, decorations, camera)
 	enemy.clear()
 
-	if level_index == 1 then
-		enemy.spawn(32 * 10, 32 * 7, 32, 32, 1)
-	end
-
 	local level_config = levels[level_index]
 	if not level_config then
 		portal.despawn()
@@ -83,6 +79,29 @@ function level_manager.load_level(level_index, player, tilemap, decorations, cam
 		portal.spawn(level_config.portal_pos.x, level_config.portal_pos.y)
 	else
 		portal.despawn()
+	end
+
+	if level_config.enemy_data_path then
+		package.loaded[level_config.enemy_data_path] = nil
+		local enemy_data = require(level_config.enemy_data_path)
+
+		if enemy_data then
+			for row = 1, #enemy_data do
+				for col = 1, #enemy_data[row] do
+					local enemy_type = enemy_data[row][col]
+
+					if enemy_type == 0 then
+						local x = (col - 1) * 32
+						local y = (row - 1) * 32
+						enemy.spawn(x, y, math.random(2), math.random(128))
+					elseif enemy_type > 0 then
+						local x = (col - 1) * 32
+						local y = (row - 1) * 32
+						enemy.spawn(x, y, math.random(2), math.random(128))
+					end
+				end
+			end
+		end
 	end
 end
 
