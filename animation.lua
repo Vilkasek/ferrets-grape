@@ -51,20 +51,20 @@ function animation.init(animation_name, m)
 			local path = animation.current_animation_config.base_path .. i .. ".png"
 			local buffer_index = ((i - 1) % animation.buffer_size) + 1
 
-      animation.buffer[buffer_index] = image.loadv(path)
+			animation.buffer[buffer_index] = image.loadv(path)
 			animation.highest_loaded_frame = i
 		end
 	end
 
-  if animation.display_frame_index % 10 == 0 then
-    animation.cleanup()
-  end
+	if animation.display_frame_index % 10 == 0 then
+		animation.cleanup()
+	end
 
 	animation.music = m
 end
 
 function animation.update(player, tilemap, decorations, camera, state_machine)
-  collectgarbage("collect")
+	collectgarbage("collect")
 
 	animation.display_frame_index = animation.display_frame_index + animation.current_animation_config.animation_speed
 
