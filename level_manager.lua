@@ -93,7 +93,7 @@ function level_manager.load_level(level_index, player, tilemap, decorations, cam
 					if enemy_type == 0 then
 						local x = (col - 1) * 32
 						local y = (row - 1) * 32
-						enemy.spawn(x, y, math.random(2), math.random(128))
+						enemy.spawn(x, y, math.random(2), math.random(32, 128))
 					elseif enemy_type > 0 then
 						local x = (col - 1) * 32
 						local y = (row - 1) * 32
