@@ -13,6 +13,7 @@ local tutorial = require("tutorial")
 local animation_module = require("animation")
 local enemy = require("enemy")
 local hud = require("hud")
+local game_over = require("game_over")
 
 local music = sound.load("./assets/audio/music/background.wav")
 local footstep = sound.load("./assets/audio/sounds/footstep.wav")
@@ -31,9 +32,10 @@ options.init(footstep, jumpsound, music, menu)
 pause.init()
 in_game_options.init(footstep, jumpsound, music, menu)
 tutorial.init()
-animation_module.init(_, music)
+animation_module.init("first", music)
 enemy.init()
 hud.init()
+game_over.init()
 
 local function update()
   buttons.read()
@@ -65,7 +67,7 @@ local function update()
     end
 
     if player.died() then
-      state_machine.change_state("MENU")
+      state_machine.change_state("GAME_OVER")
     end
   elseif state_machine.get_state() == "OPTIONS" then
     options.update()
@@ -76,6 +78,8 @@ local function update()
   elseif state_machine.get_state() == "TUTORIAL" then
     animation_module.cleanup()
     tutorial.update()
+  elseif state_machine.get_state() == "GAME_OVER" then
+    game_over.update()
   end
 end
 
@@ -107,6 +111,8 @@ local function render()
     pause.render()
   elseif state_machine.get_state() == "TUTORIAL" then
     tutorial.render()
+  elseif state_machine.get_state() == "GAME_OVER" then
+    game_over.render()
   end
   screen.flip()
 end
