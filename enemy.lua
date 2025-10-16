@@ -9,6 +9,10 @@ local Enemy = {
 	current_frame = 1,
 }
 
+local SCREEN_WIDTH = 480
+local SCREEN_HEIGHT = 272
+local VISIBILITY_MARGIN = 64
+
 local function load_animation_frames()
 	Enemy.animation_frames = {
 		image.load("./assets/graphics/enemies/red_bee/1.png"),
@@ -49,7 +53,24 @@ function Enemy.clear()
 	Enemy.enemies = {}
 end
 
+local function is_enemy_visible(enemy)
+	-- Sprawdź czy przeciwnik jest w widocznym obszarze (z marginesem)
+	local screen_left = camera.x - VISIBILITY_MARGIN
+	local screen_right = camera.x + SCREEN_WIDTH + VISIBILITY_MARGIN
+	local screen_top = camera.y - VISIBILITY_MARGIN
+	local screen_bottom = camera.y + SCREEN_HEIGHT + VISIBILITY_MARGIN
+
+	return enemy.pos_x + enemy.width > screen_left
+		and enemy.pos_x < screen_right
+		and enemy.pos_y + enemy.height > screen_top
+		and enemy.pos_y < screen_bottom
+end
+
 local function update_enemy_movement(enemy)
+	if not is_enemy_visible(enemy) then
+		return
+	end
+
 	enemy.pos_x = enemy.pos_x + (enemy.speed * enemy.direction)
 
 	if enemy.direction == 1 then
@@ -90,13 +111,15 @@ end
 
 function Enemy.check_collision(player_x, player_y, player_width, player_height)
 	for _, enemy in ipairs(Enemy.enemies) do
-		if
-			player_x < enemy.pos_x + enemy.width
-			and player_x + player_width > enemy.pos_x
-			and player_y < enemy.pos_y + enemy.height
-			and player_y + player_height > enemy.pos_y
-		then
-			return true
+		if is_enemy_visible(enemy) then
+			if
+				player_x < enemy.pos_x + enemy.width
+				and player_x + player_width > enemy.pos_x
+				and player_y < enemy.pos_y + enemy.height
+				and player_y + player_height > enemy.pos_y
+			then
+				return true
+			end
 		end
 	end
 	return false
@@ -108,11 +131,13 @@ function Enemy.render()
 	end
 
 	for _, enemy in ipairs(Enemy.enemies) do
-		local frames = enemy.facing_right and Enemy.animation_frames or Enemy.animation_frames_flipped
-		local current_frame_image = frames[Enemy.current_frame]
+		if is_enemy_visible(enemy) then
+			local frames = enemy.facing_right and Enemy.animation_frames or Enemy.animation_frames_flipped
+			local current_frame_image = frames[Enemy.current_frame]
 
-		if current_frame_image then
-			current_frame_image:blit(enemy.pos_x - camera.x, enemy.pos_y - camera.y)
+			if current_frame_image then
+				current_frame_image:blit(enemy.pos_x - camera.x, enemy.pos_y - camera.y)
+			end
 		end
 	end
 end
