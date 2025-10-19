@@ -121,12 +121,12 @@ function level_manager.check_level_transition(player, tilemap, decorations, came
 	then
 		level_manager.finished_levels = level_manager.finished_levels + 1
 
-		if level_manager.current_level_index == 6 then
-			animation_module.cleanup()
-			animation_module.init("second", level_manager.music)
-			state_machine.change_state("ANIMATION")
-			return
-		end
+		-- if level_manager.current_level_index == 6 then
+		-- 	animation_module.cleanup()
+		-- 	animation_module.init("second", level_manager.music)
+		-- 	state_machine.change_state("ANIMATION")
+		-- 	return
+		-- end
 
 		local next_level = level_manager.current_level_index + 1
 		if levels[next_level] then
