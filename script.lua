@@ -53,8 +53,6 @@ local function update()
       animation_module.cleanup()
     end
   elseif state_machine.get_state() == "GAME" then
-    animation_module.cleanup()
-
     player.update()
     portal.update()
     enemy.update()
