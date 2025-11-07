@@ -2,8 +2,16 @@ local camera = require("camera")
 
 local Enemy = {
   enemies = {},
-  animation_frames = {},
-  animation_frames_flipped = {},
+  animation_frames = {
+    type_1 = {},
+    type_2 = {},
+    type_3 = {},
+  },
+  animation_frames_flipped = {   
+    type_1 = {},
+    type_2 = {},
+    type_3 = {},
+  },
   frame_timer = 0,
   frame_speed = 30,
   current_frame = 1,
@@ -14,18 +22,18 @@ local SCREEN_HEIGHT = 272
 local VISIBILITY_MARGIN = 64
 
 local function load_animation_frames()
-  Enemy.animation_frames = {
+  Enemy.animation_frames.type_1 = {
     image.load("./assets/graphics/enemies/green_bee/1.png"),
     image.load("./assets/graphics/enemies/green_bee/2.png"),
   }
 
-  Enemy.animation_frames_flipped = {
+  Enemy.animation_frames_flipped.type_1 = {
     image.load("./assets/graphics/enemies/green_bee/1.png"),
     image.load("./assets/graphics/enemies/green_bee/2.png"),
   }
 
-  for i = 1, #Enemy.animation_frames_flipped do
-    image.fliph(Enemy.animation_frames_flipped[i])
+  for i = 1, #Enemy.animation_frames_flipped.type_1 do
+    image.fliph(Enemy.animation_frames_flipped.type_1[i])
   end
 end
 
@@ -54,7 +62,6 @@ function Enemy.clear()
 end
 
 local function is_enemy_visible(enemy)
-  -- Sprawdź czy przeciwnik jest w widocznym obszarze (z marginesem)
   local screen_left = camera.x - VISIBILITY_MARGIN
   local screen_right = camera.x + SCREEN_WIDTH + VISIBILITY_MARGIN
   local screen_top = camera.y - VISIBILITY_MARGIN
@@ -126,13 +133,13 @@ function Enemy.check_collision(player_x, player_y, player_width, player_height)
 end
 
 function Enemy.render()
-  if not Enemy.animation_frames[1] or not Enemy.animation_frames[2] then
+  if not Enemy.animation_frames.type_1[1] or not Enemy.animation_frames.type_1[2] then
     return
   end
 
   for _, enemy in ipairs(Enemy.enemies) do
     if is_enemy_visible(enemy) then
-      local frames = enemy.facing_right and Enemy.animation_frames or Enemy.animation_frames_flipped
+      local frames = enemy.facing_right and Enemy.animation_frames.type_1 or Enemy.animation_frames_flipped.type_1
       local current_frame_image = frames[Enemy.current_frame]
 
       if current_frame_image then

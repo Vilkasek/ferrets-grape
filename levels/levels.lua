@@ -72,7 +72,7 @@ return {
   [7] = {
     map_data_path = "levels.level7_level",
     deco_data_path = "levels.level7_decoration",
-    enemy_data_path = "levels.level0_decoration",
+    enemy_data_path = "",
     tileset_path = "./assets/graphics/tilesets/level7.png",
     deco_tileset_path = "./assets/graphics/tilesets/level7_decoration.png",
     background_index = 8,
@@ -82,7 +82,7 @@ return {
   [8] = {
     map_data_path = "levels.level8_level",
     deco_data_path = "levels.level8_decoration",
-    enemy_data_path = "levels.level0_decoration",
+    enemy_data_path = "",
     tileset_path = "./assets/graphics/tilesets/level8.png",
     deco_tileset_path = "./assets/graphics/tilesets/level8_decoration.png",
     background_index = 9,
@@ -92,7 +92,7 @@ return {
   [9] = {
     map_data_path = "levels.level9_level",
     deco_data_path = "levels.level9_decoration",
-    enemy_data_path = "levels.level1_enemies",
+    enemy_data_path = "",
     tileset_path = "./assets/graphics/tilesets/level9.png",
     deco_tileset_path = "./assets/graphics/tilesets/level9_decoration.png",
     background_index = 10,
@@ -102,7 +102,7 @@ return {
   [10] = {
     map_data_path = "levels.level10_level",
     deco_data_path = "levels.level10_decoration",
-    enemy_data_path = "levels.level0_decoration",
+    enemy_data_path = "",
     tileset_path = "./assets/graphics/tilesets/level10.png",
     deco_tileset_path = "./assets/graphics/tilesets/level10_decoration.png",
     background_index = 11,
@@ -112,6 +112,7 @@ return {
   [11] = {
     map_data_path = "levels.level11_level",
     deco_data_path = "levels.level11_decoration",
+    enemy_data_path = "",
     tileset_path = "./assets/graphics/tilesets/level11.png",
     deco_tileset_path = "./assets/graphics/tilesets/level11_decoration.png",
     background_index = 12,
